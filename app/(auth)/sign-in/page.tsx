@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authApi } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth";
 import { AlertCircle } from "lucide-react";
 const SignInPage = () => {
   const router = useRouter();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +25,8 @@ const SignInPage = () => {
       });
       if (res.user) {
         if (res.user.isVerified) {
-          router.push("/");
+          login(res.user);
+          router.push("/dashboard");
         } else {
           router.push(`/verify-email?email=${email}`);
         }

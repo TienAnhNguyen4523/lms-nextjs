@@ -4,15 +4,20 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell"
 import { motion } from "framer-motion"
 import { Music, Clock, Trophy, Play, ArrowRight, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { RoleGuard } from "@/components/auth/role-guard"
+import { useAuth } from "@/lib/auth"
 
 export default function StudentDashboard() {
+  const { user } = useAuth()
+  
   return (
-    <DashboardShell>
-      <div className="space-y-10 font-bricolage">
-        <header className="space-y-2">
-          <h1 className="text-4xl font-black uppercase tracking-tighter">Welcome back, Alex!</h1>
-          <p className="text-black/60 font-medium">You've reached your practice goal 4 days in a row. Keep the rhythm going!</p>
-        </header>
+    <RoleGuard allowedRoles={["STUDENT"]}>
+      <DashboardShell>
+        <div className="space-y-10 font-bricolage">
+          <header className="space-y-2">
+            <h1 className="text-4xl font-black uppercase tracking-tighter">Welcome back, {user?.fullName}!</h1>
+            <p className="text-black/60 font-medium">You've reached your practice goal 4 days in a row. Keep the rhythm going!</p>
+          </header>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -102,6 +107,7 @@ export default function StudentDashboard() {
           </div>
         </div>
       </div>
-    </DashboardShell>
+      </DashboardShell>
+    </RoleGuard>
   )
 }

@@ -9,7 +9,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { useAuth } from "@/lib/auth";
 
 const Page = () => {
-  const { setRole, logout } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -41,40 +41,61 @@ const Page = () => {
             <Link href="#contact" className="hover:text-primary transition-colors">Contact</Link>
           </div>
           <div className="flex items-center gap-4">
-            <button className="hidden sm:flex btn-signin">
-              Join the Rhythm
-            </button>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div className="w-10 h-10 rounded-full border-2 border-black overflow-hidden bg-cta-gold flex items-center justify-center hover:scale-105 transition-transform">
-                  <User className="w-6 h-6" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Switch Role (Dev)</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => setRole("STUDENT")}>
-                  Student Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setRole("TEACHER")}>
-                  Teacher Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setRole("ADMIN")}>
-                  Admin Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" /> Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" /> Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive" onClick={logout}>
-                  <LogOut className="mr-2 h-4 w-4" /> Log out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {!isLoading && (
+              <>
+                {!user ? (
+                  <>
+                    <Link href="/sign-in" className="hidden sm:flex px-6 py-2.5 font-bold hover:text-primary transition-colors">
+                      Sign In
+                    </Link>
+                    <Link href="/sign-up" className="hidden sm:flex btn-signin">
+                      Join the Rhythm
+                    </Link>
+                  </>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <Link href="/dashboard" className="hidden sm:flex px-6 py-2.5 bg-black text-white rounded-full font-bold hover:scale-105 transition-transform text-sm">
+                      Go to Dashboard
+                    </Link>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <div className="w-10 h-10 rounded-full border-2 border-black overflow-hidden bg-cta-gold flex items-center justify-center hover:scale-105 transition-transform group relative">
+                          {user.avatarUrl ? (
+                            <Image src={user.avatarUrl} alt={user.fullName} fill className="object-cover" />
+                          ) : (
+                            <User className="w-6 h-6" />
+                          )}
+                        </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuLabel className="font-black uppercase tracking-tight">
+                          <div className="flex flex-col">
+                            <span>{user.fullName}</span>
+                            <span className="text-[10px] text-black/40 font-bold">{user.email}</span>
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link href="/dashboard" className="flex items-center cursor-pointer">
+                            <ArrowRight className="mr-2 h-4 w-4" /> Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <User className="mr-2 h-4 w-4" /> Profile
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Settings className="mr-2 h-4 w-4" /> Settings
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive cursor-pointer" onClick={logout}>
+                          <LogOut className="mr-2 h-4 w-4" /> Log out
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -103,9 +124,15 @@ const Page = () => {
               Experience the world's most immersive drum learning platform. Real-time feedback, professional instructors, and a community that hits the right beat.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
-              <button className="bg-black text-white px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-transform group">
-                Get Started Free <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              {!user ? (
+                <Link href="/sign-up" className="bg-black text-white px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-transform group">
+                  Get Started Free <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              ) : (
+                <Link href="/dashboard" className="bg-black text-white px-8 py-4 rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-transform group">
+                  Continue Learning <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              )}
               <button className="bg-white text-black px-8 py-4 rounded-full font-bold border-2 border-black flex items-center gap-2 hover:bg-black hover:text-white transition-all">
                 <Play className="w-5 h-5 fill-current" /> Watch Demo
               </button>

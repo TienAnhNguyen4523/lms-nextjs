@@ -23,10 +23,14 @@ export interface ResetPasswordDto {
   password?: string;
 }
 
+export type UserRole = 'ADMIN' | 'STUDENT' | 'TEACHER';
+
 export interface User {
   id: string;
   email: string;
   fullName: string;
+  role: UserRole;
+  avatarUrl?: string;
   provider?: 'local' | 'google' | 'facebook';
   providerId?: string;
   isVerified: boolean;
