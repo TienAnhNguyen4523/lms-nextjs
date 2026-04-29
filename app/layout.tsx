@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Real-time AI Teaching Platform",
 };
 
+import { AuthProvider } from "@/lib/auth";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,8 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${bricolage.variable} antialiased`} suppressHydrationWarning>
-
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
